@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+package sleep;
+
+service SleepService {
+  rpc Sleep(SleepRequest) returns (SleepResponce) {}
+}
+
+message SleepRequest {
+  google.protobuf.Duration duration=1;
+  int32 dummy_bytes=2;
+}
+
+message SleepResponce {
+  google.protobuf.Duration duration=1;
+  int32 dummy_bytes=2;
+  bytes data=3;
+}
