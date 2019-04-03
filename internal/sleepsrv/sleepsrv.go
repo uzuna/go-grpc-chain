@@ -2,6 +2,7 @@ package sleepsrv
 
 import (
 	"context"
+	"log"
 	"strings"
 	"time"
 
@@ -21,8 +22,10 @@ func (s *SleepService) Sleep(ctx context.Context, req *sleep.SleepRequest) (*sle
 		err = errors.WithStack(err)
 		return nil, grpc.Errorf(codes.InvalidArgument, err.Error())
 	}
+	log.Printf("[DEBUG] Sleep Start (Dur: %s)", dur.String())
 	select {
 	case <-ctx.Done():
+		log.Printf("[DEBUG] Sleep Abort (Dur: %s)", dur.String())
 		errMsg := ctx.Err().Error()
 		if strings.Contains(errMsg, "deadline") {
 			return nil, grpc.Errorf(codes.DeadlineExceeded, errMsg)
@@ -31,6 +34,7 @@ func (s *SleepService) Sleep(ctx context.Context, req *sleep.SleepRequest) (*sle
 		}
 		return nil, nil
 	case <-time.After(dur):
+		log.Printf("[DEBUG] Sleep Finish (Dur: %s)", dur.String())
 		res := &sleep.SleepResponce{
 			Duration:   req.Duration,
 			DummyBytes: req.DummyBytes,
