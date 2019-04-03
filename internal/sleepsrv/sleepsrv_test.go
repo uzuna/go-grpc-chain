@@ -31,6 +31,13 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+func checkError(t *testing.T, err error) {
+	if err != nil {
+		t.Logf("%+v", err)
+		t.FailNow()
+	}
+}
+
 func TestSleep(t *testing.T) {
 	srv := &sleepsrv.SleepService{}
 
@@ -103,11 +110,4 @@ func TestClient(t *testing.T) {
 		}(i)
 	}
 	wg.Wait()
-}
-
-func checkError(t *testing.T, err error) {
-	if err != nil {
-		t.Logf("%+v", err)
-		t.FailNow()
-	}
 }
